@@ -1,12 +1,14 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const bcrypt = require("bcryptjs");
-const userSchena = new mongoose.Schema({
+
+
+const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
 
 //* Şifreyi kaydetmeden önce hashleyelim
-userSchena.pre("save", async function (next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
   }
@@ -16,7 +18,7 @@ userSchena.pre("save", async function (next) {
 });
 
 //* Kullanıcı şifresini dogrulamak için yçntem ekleyelim
-userSchema.methods.matchPassword = async function(enteredPassword) {
-    return  await bcrypt.compare(enteredPassword, this.password);
-}
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 module.exports = mongoose.model("User", userSchema);
