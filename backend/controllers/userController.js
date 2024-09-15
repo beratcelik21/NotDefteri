@@ -15,16 +15,13 @@ const registerUser = async (req, res) => {
     }
 
     // Yeni kullanıcı oluşturma
-    const newUser = new User({
-      username,
-      password,
-    });
+    const newUser = new User({ username, password });
 
     // Kaydet
     await newUser.save();
 
     // Kullanıcıya JWT token döndür
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET || 'defaultsecret', {
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET || "defaultsecret", {
       expiresIn: "1h",
     });
 
@@ -46,24 +43,16 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ username });
 
     // Şifreyi kontrol et
-    if (!user) {
-      return res.status(401).json({ message: "Kullanıcı bulunamadı" });
-    }
-
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch) {
+    if (!user || !(await user.matchPassword(password))) {
       return res.status(401).json({ message: "Geçersiz kullanıcı adı veya şifre" });
     }
 
     // Başarılı girişte JWT token döndür
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'defaultsecret', {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "defaultsecret", {
       expiresIn: "1h",
     });
 
-    res.json({
-      message: "Giriş başarılı",
-      token,
-    });
+    res.json({ message: "Giriş başarılı", token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
