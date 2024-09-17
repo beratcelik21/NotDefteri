@@ -22,7 +22,7 @@ const registerUser = async (req, res) => {
 
     // Kullanıcıya JWT token döndür
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET || "defaultsecret", {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
 
     res.status(201).json({
@@ -49,7 +49,7 @@ const loginUser = async (req, res) => {
 
     // Başarılı girişte JWT token döndür
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "defaultsecret", {
-      expiresIn: "1h",
+      expiresIn: "24h",
     });
 
     res.json({ message: "Giriş başarılı", token });
