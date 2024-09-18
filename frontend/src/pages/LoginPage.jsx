@@ -7,14 +7,23 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!username || !password) {
+      setError("Kullanıcı adı ve şifre boş bırakılamaz.");
+      return;
+    }
+
     try {
+      setIsLoading(true);
       const { token } = await loginUser({ username, password });
       localStorage.setItem("token", token);
-      navigate.push("/home");
+      setIsLoading(false);
+      navigate("/home");
     } catch (error) {
+      setIsLoading(false);
       setError("Giriş başarısız. Lütfen tekrar deneyiniz.");
     }
   };
@@ -49,14 +58,21 @@ const LoginPage = () => {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-500"
+            disabled={isLoading}
           >
-            Giriş Yap
+           {isLoading ? "Giriş Yapılıyor..." : "Giriş Yap"}
           </button>
         </form>
         <div className="mt-4 text-center">
-            <p>Hesabınız yok mu?{" "}
-                <span onClick={handleNavigateToRegister}
-                className="text-blue-600 hover:underline cursor-pointer ">Kayıt Ol</span> </p>
+          <p>
+            Hesabınız yok mu?{" "}
+            <span
+              onClick={handleNavigateToRegister}
+              className="text-blue-600 hover:underline cursor-pointer "
+            >
+              Kayıt Ol
+            </span>{" "}
+          </p>
         </div>
       </div>
     </div>
